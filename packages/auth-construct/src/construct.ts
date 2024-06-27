@@ -425,6 +425,18 @@ export class AmplifyAuth
         phoneNumber: DEFAULTS.IS_REQUIRED_ATTRIBUTE.phoneNumber(phoneEnabled),
         ...(props.userAttributes ? props.userAttributes : {}),
       },
+      customAttributes: {
+        ...(props.userAttributes
+          ? Object.fromEntries(
+              Object.entries(props.userAttributes)
+                .filter(([key]) => key.startsWith('custom:'))
+                .map(([key, value]) => [
+                  key.replace(/^(custom:|User\.?)/i, ''),
+                  value,
+                ])
+            )
+          : {}),
+      },
       selfSignUpEnabled: DEFAULTS.ALLOW_SELF_SIGN_UP,
       mfa: mfaMode,
       mfaMessage: this.getMFAMessage(props.multifactor),
