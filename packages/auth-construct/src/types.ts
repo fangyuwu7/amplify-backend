@@ -3,7 +3,9 @@ import { triggerEvents } from './trigger_events.js';
 import { BackendOutputStorageStrategy } from '@aws-amplify/plugin-types';
 import { AuthOutput } from '@aws-amplify/backend-output-schemas';
 import {
+  NumberAttribute,
   StandardAttributes,
+  StringAttribute,
   UserPoolIdentityProviderSamlMetadata,
 } from 'aws-cdk-lib/aws-cognito';
 export type VerificationEmailWithLink = {
@@ -327,6 +329,15 @@ export type ExternalProviderOptions = {
  */
 export type TriggerEvent = (typeof triggerEvents)[number];
 
+export type CustomAttributes = {
+  [key in `custom:${string}`]: StringAttribute | NumberAttribute;
+};
+
+export type UserAttributes =
+  | StandardAttributes
+  | CustomAttributes
+  | (StandardAttributes & CustomAttributes);
+
 /**
  * Input props for the AmplifyAuth construct
  */
@@ -362,7 +373,7 @@ export type AuthProps = {
    * The set of attributes that are required for every user in the user pool. Read more on attributes here - https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
    * @default - email/phone will be added as required user attributes if they are included as login methods
    */
-  userAttributes?: StandardAttributes;
+  userAttributes?: UserAttributes;
   /**
    * Configure whether users can or are required to use multifactor (MFA) to sign in.
    */
