@@ -423,7 +423,13 @@ export class AmplifyAuth
       standardAttributes: {
         email: DEFAULTS.IS_REQUIRED_ATTRIBUTE.email(emailEnabled),
         phoneNumber: DEFAULTS.IS_REQUIRED_ATTRIBUTE.phoneNumber(phoneEnabled),
-        ...(props.userAttributes ? props.userAttributes : {}),
+        ...(props.userAttributes
+          ? Object.fromEntries(
+              Object.entries(props.userAttributes).filter(
+                ([key]) => !key.startsWith('custom:')
+              )
+            )
+          : {}),
       },
       customAttributes: {
         ...(props.userAttributes
